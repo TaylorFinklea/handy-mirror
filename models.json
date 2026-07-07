@@ -1,0 +1,23 @@
+[
+  {
+    "tag": "v1",
+    "repo": "handy-computer/parakeet-unified-en-0.6b-gguf",
+    "title": "parakeet unified en 0.6b",
+    "notes": "Mirror of [handy-computer/parakeet-unified-en-0.6b-gguf](https://huggingface.co/handy-computer/parakeet-unified-en-0.6b-gguf) — Parakeet Unified (English), Q8_0 quant.",
+    "quants": ["Q8_0"]
+  },
+  {
+    "tag": "v2",
+    "repo": "handy-computer/nemotron-3.5-asr-streaming-0.6b-gguf",
+    "title": "nemotron streaming 3.5 0.6b",
+    "notes": "Mirror of [handy-computer/nemotron-3.5-asr-streaming-0.6b-gguf](https://huggingface.co/handy-computer/nemotron-3.5-asr-streaming-0.6b-gguf) — NVIDIA Nemotron 3.5 ASR Streaming (multilingual, 40 locales), Q8_0 quant.",
+    "quants": ["Q8_0"]
+  },
+  {
+    "tag": "v3",
+    "repo": "handy-computer/canary-180m-flash-gguf",
+    "title": "canary 180m flash",
+    "notes": "Mirror of [handy-computer/canary-180m-flash-gguf](https://huggingface.co/handy-computer/canary-180m-flash-gguf) — NVIDIA Canary-180M-Flash (en/de/es/fr, ASR + translation), Q8_0 quant.",
+    "quants": ["Q8_0"]
+  }
+]
