@@ -10,56 +10,61 @@ If your environment *can* reach Hugging Face, prefer pulling from upstream direc
 
 ## Releases
 
-Each model is published as a separate GitHub release. Pick the release that matches the Handy version you run.
+Each model is published as a separate GitHub release. Pick the release whose title matches the model your version of Handy needs.
 
-| Model | HF upstream | License | Release |
-|---|---|---|---|
-| `parakeet-unified` | [`nvidia/parakeet-tdt-0.6b-v2`](https://huggingface.co/nvidia/parakeet-tdt-0.6b-v2) | see upstream model card | [releases](../../releases) |
-| `canary-180m` | [`nvidia/canary-180m-flash`](https://huggingface.co/nvidia/canary-180m-flash) | see upstream model card | [releases](../../releases) |
+| Model | Asset (`.gguf`) | Source | License | Release |
+|---|---|---|---|---|
+| `parakeet-unified-en-0.6b` | `parakeet-unified-en-0.6-Q8_0.gguf` | [`nvidia/parakeet-tdt-0.6b-v2`](https://huggingface.co/nvidia/parakeet-tdt-0.6b-v2) (via a community GGUF port) | see upstream model card | [releases](../../releases) |
+| `canary-180m` | `canary-180m-Q8_0.gguf` (or as published) | [`nvidia/canary-180m-flash`](https://huggingface.co/nvidia/canary-180m-flash) (via a community GGUF port) | see upstream model card | [releases](../../releases) |
 
-(Edit this table as you add or retire mirrors.)
+Add or retire rows as the lineup changes.
 
 ## Usage
 
 1. Open the [Releases](../../releases) page.
-2. Download the asset attached to the release matching your Handy version (typically a `.tar.gz` containing the full model directory).
-3. Verify the checksum:
+2. Download the `.gguf` asset attached to the release matching your Handy version.
+3. (Optional but recommended) Verify against the `.sha256` sidecar if one is attached:
    ```bash
-   sha256sum -c <model>-v<version>.tar.gz.sha256
+   sha256sum -c <asset>.gguf.sha256
    ```
-4. Extract into Handy's model directory. See the Handy app docs for the exact path on your platform.
+4. Place the `.gguf` in Handy's model directory. See the Handy app docs for the exact path on your platform.
 
 ## For maintainers
 
-Refresh or add a mirror:
+Upload a new mirror (you have the `.gguf` locally — typically a community GGUF port of the upstream model):
 
 ```bash
-# 1. Download from Hugging Face
-huggingface-cli download <org>/<model> --local-dir ./<model>
+# Optional: sidecar checksum for managed-device fleets to verify
+sha256sum <asset>.gguf > <asset>.gguf.sha256
 
-# 2. Repackage and checksum
-tar -C <model> -czf <model>-v<version>.tar.gz .
-sha256sum <model>-v<version>.tar.gz > <model>-v<version>.tar.gz.sha256
+# Publish as a GitHub release
+gh release create v<tag> <asset>.gguf [<asset>.gguf.sha256] \
+  --repo TaylorFinklea/handy-mirror \
+  --title "<friendly model name>" \
+  --notes "Mirror of <upstream source>."
+```
 
-# 3. Create a GitHub release and attach both files
-gh release create <model>-v<version> \
-  <model>-v<version>.tar.gz \
-  <model>-v<version>.tar.gz.sha256 \
-  --title "<model> v<version>" \
-  --notes "Mirror of <org>/<model> at upstream revision <sha>."
+For example:
+
+```bash
+gh release create v1 parakeet-unified-en-0.6-Q8_0.gguf \
+  --repo TaylorFinklea/handy-mirror \
+  --title "parakeet unified en 0.6b" \
+  --notes "mirror"
 ```
 
 Tips:
 
-- Pin the release tag to the upstream revision SHA so consumers can verify they're getting the same bytes the mirror was built from.
-- Keep the `.sha256` next to the tarball — managed-device fleets should verify before installing.
-- Don't modify weights between upstream and the archive; this is a pure mirror.
+- Use a single tag per release (e.g. `v1`, `v2`, …) and let the release **title** carry the model name — Handy consumers select the release whose title matches the model they need.
+- Pin the upstream quantization source / revision SHA in the release notes so consumers can verify provenance.
+- Attach a `.sha256` sidecar for managed-device fleets; don't rely on GitHub's digest URL alone.
+- Don't re-quantize or edit the `.gguf` between source and release — this is a pure mirror.
 
 ## License & attribution
 
-This repo is a passive redistribution. All model weights are mirrored from their original upstream repositories and remain under the licenses specified by their authors. See each upstream model card (linked in the table above) for the applicable license, attribution requirements, and usage restrictions.
+This repo is a passive redistribution. The `.gguf` assets are sourced from community GGUF ports of the upstream models and remain under the licenses specified by their authors. See each upstream model card (linked in the table above) for the applicable license, attribution requirements, and usage restrictions.
 
-Handy is by [Tatsuya Taguchi](https://huggingface.co/Handy). The underlying model weights (Parakeet, Canary, and others) are © NVIDIA and released under their respective open licenses.
+Handy is by [Tatsuya Taguchi](https://huggingface.co/Handy). The underlying model weights (Parakeet, Canary, and others) are © NVIDIA and released under their respective open licenses; the GGUF conversions are © their respective community authors.
 
 ## Status
 
